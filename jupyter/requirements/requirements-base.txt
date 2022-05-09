@@ -1,0 +1,11 @@
+jupyterlab
+nltk
+scikit-learn
+pandas
+seaborn
+beakerx
+gensim
+xlrd
+ipdb
+datasets
+# NOTE: spacy is installed separately so that the right CUDA version can be used

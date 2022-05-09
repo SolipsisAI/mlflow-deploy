@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.6'
 
 services:
     db:
@@ -28,6 +28,33 @@ services:
             - frontend
             - backend
         command: mlflow server --backend-store-uri mysql+pymysql://${MYSQL_USER}:${MYSQL_PASSWORD}@db:3306/${MYSQL_DATABASE} --host 0.0.0.0 --default-artifact-root /mnt/data
+
+    gpu_test:
+      image: nvidia/cuda:10.2-base
+      command: nvidia-smi
+      deploy:
+        resources:
+          reservations:
+            devices:
+              - driver: nvidia
+                count: 1
+                capabilities: [gpu]
+
+    jupyter:
+        build: ./jupyter
+        image: jupyter_lab
+        networks:
+            - frontend
+            - backend
+        ports:
+          - "8888:8888"
+        deploy:
+          resources:
+            reservations:
+              devices:
+                - driver: nvidia
+                  count: 1
+                  capabilities: [gpu]
 
     nginx:
         restart: always
