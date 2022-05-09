@@ -48,6 +48,8 @@ services:
             - backend
         ports:
           - "8888:8888"
+        volumes:
+          - /mnt/data/jupyter/solipsisai:/home/jovyan/work
         deploy:
           resources:
             reservations:
