@@ -1,4 +1,4 @@
-jupyterlab
+jupyterlab-vim
 nltk
 scikit-learn
 pandas
