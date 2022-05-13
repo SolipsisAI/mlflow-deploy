@@ -17,6 +17,20 @@ services:
       volumes:
         - dbdata:/var/lib/mysql
 
+    mlflow:
+        restart: always
+        build: ./mlflow
+        image: mlflow_server
+        container_name: mlflow_server
+        volumes:
+          - /mnt/data/mlruns:/mnt/data
+        ports:
+          - "5000:5000"
+        networks:
+          - frontend
+          - backend
+        command: mlflow server --backend-store-uri mysql+pymysql://${MYSQL_USER}:${MYSQL_PASSWORD}@db:3306/${MYSQL_DATABASE} --host 0.0.0.0 --default-artifact-root /mnt/data
+
     jupyter:
         build: ./jupyter
         image: jupyter_lab
@@ -24,13 +38,12 @@ services:
           - frontend
           - backend
         environment:
+          - MLFLOW_TRACKING_URI=${MLFLOW_TRACKING_URI}
           - JUPYTER_TOKEN=easy
-        ports:
-          - "8888:8888"
-          - "5000:5000"
+        expose:
+          - "8888"
         volumes:
           - /mnt/data/jupyter/solipsisai:/home/jovyan/work
-          - /mnt/data/mlruns:/mnt/data
         command: start-notebook.sh --NotebookApp.token=${JUPYTER_PASSWORD} --NotebookApp.allow_origin='*'
         deploy:
           resources:
@@ -43,8 +56,8 @@ services:
     nginx:
         restart: always
         build: ./nginx
-        image: mlflow_nginx
-        container_name: mlflow_nginx
+        image: jupyter_nginx
+        container_name: jupyter_nginx
         ports:
             - "80:80"
         networks:
