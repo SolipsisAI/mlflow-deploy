@@ -44,6 +44,7 @@ services:
           - "8888"
         volumes:
           - /mnt/data/jupyter/solipsisai:/home/jovyan/work
+          - /mnt/data/mlruns:/mnt/data
         command: start-notebook.sh --NotebookApp.token=${JUPYTER_PASSWORD} --NotebookApp.allow_origin='*'
         deploy:
           resources:
