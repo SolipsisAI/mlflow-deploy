@@ -2,54 +2,36 @@ version: '3.6'
 
 services:
     db:
-        restart: always
-        image: mysql/mysql-server:5.7.28
-        container_name: mlflow_db
-        expose:
-            - "3306"
-        networks:
-            - backend
-        environment:
-            - MYSQL_DATABASE=${MYSQL_DATABASE}
-            - MYSQL_USER=${MYSQL_USER}
-            - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-        volumes:
-            - dbdata:/var/lib/mysql
-
-    web:
-        restart: always
-        build: ./mlflow
-        image: mlflow_server
-        container_name: mlflow_server
-        expose:
-            - "5000"
-        networks:
-            - frontend
-            - backend
-        command: mlflow server --backend-store-uri mysql+pymysql://${MYSQL_USER}:${MYSQL_PASSWORD}@db:3306/${MYSQL_DATABASE} --host 0.0.0.0 --default-artifact-root /mnt/data
-
-    gpu_test:
-      image: nvidia/cuda:10.2-base
-      command: nvidia-smi
-      deploy:
-        resources:
-          reservations:
-            devices:
-              - driver: nvidia
-                count: 1
-                capabilities: [gpu]
+      restart: always
+      image: mysql/mysql-server:5.7.28
+      container_name: mlflow_db
+      expose:
+        - "3306"
+      networks:
+        - backend
+      environment:
+        - MYSQL_DATABASE=${MYSQL_DATABASE}
+        - MYSQL_USER=${MYSQL_USER}
+        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      volumes:
+        - dbdata:/var/lib/mysql
 
     jupyter:
         build: ./jupyter
         image: jupyter_lab
         networks:
-            - frontend
-            - backend
+          - frontend
+          - backend
+        environment:
+          - JUPYTER_TOKEN=easy
         ports:
           - "8888:8888"
+          - "5000:5000"
         volumes:
           - /mnt/data/jupyter/solipsisai:/home/jovyan/work
+          - /mnt/data/mlruns:/mnt/data
+        command: start-notebook.sh --NotebookApp.token=${JUPYTER_PASSWORD}
         deploy:
           resources:
             reservations:
@@ -68,7 +50,7 @@ services:
         networks:
             - frontend
         depends_on:
-            - web
+            - jupyter
 
 networks:
     frontend:

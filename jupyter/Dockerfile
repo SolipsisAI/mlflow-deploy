@@ -9,4 +9,4 @@ COPY requirements/requirements-huggingface.txt requirements-huggingface.txt
 RUN pip install -r requirements-base.txt
 RUN pip install -r requirements-pytorch.txt
 RUN pip install -r requirements-huggingface.txt 
-
+RUN pip install mlflow[extras] boto3 pymysql
