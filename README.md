@@ -42,4 +42,6 @@ If you make any changes to the `Dockerfile` in any of these subfolders, you may 
 docker compose up -d --build --force-recreate
 ```
 
+# Troubleshooting
 
+- https://discourse.jupyter.org/t/troubleshoot-terminal-hangs-on-launch-docker-image-fails-in-linux-works-in-macos/2829
