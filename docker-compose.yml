@@ -15,7 +15,7 @@ services:
         - MYSQL_PASSWORD=${MYSQL_PASSWORD}
         - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       volumes:
-        - dbdata:/var/lib/mysql
+        - mldbdata:/var/lib/mysql
 
     mlflow:
         restart: always
@@ -23,7 +23,7 @@ services:
         image: mlflow_server
         container_name: mlflow_server
         volumes:
-          - /mnt/data/mlruns:/mnt/data
+          - /mnt/data/mlflow:/mnt/data
         ports:
           - "5000:5000"
         networks:
@@ -44,7 +44,6 @@ services:
           - "8888"
         volumes:
           - /mnt/data/jupyter/solipsisai:/home/jovyan/work
-          - /mnt/data/mlruns:/mnt/data
         command: start-notebook.sh --NotebookApp.token=${JUPYTER_PASSWORD} --NotebookApp.allow_origin='*'
         deploy:
           resources:
@@ -73,4 +72,4 @@ networks:
         driver: bridge
 
 volumes:
-    dbdata:
+    mldbdata:
