@@ -23,7 +23,7 @@ services:
         image: mlflow_server
         container_name: mlflow_server
         volumes:
-          - /mnt/data/mlflow:/mnt/data
+          - /mnt/external/mlstation/mlflow:/mnt/data
         ports:
           - "5000:5000"
         networks:
@@ -43,7 +43,7 @@ services:
         expose:
           - "8888"
         volumes:
-          - /mnt/data/jupyter/solipsisai:/home/jovyan/work
+          - /mnt/external/mlstation/jupyter:/home/jovyan/work
         command: start-notebook.sh --NotebookApp.token=${JUPYTER_PASSWORD} --NotebookApp.allow_origin='*'
         deploy:
           resources:
